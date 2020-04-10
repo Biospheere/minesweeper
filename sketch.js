@@ -2,6 +2,8 @@ let grid;
 let cols;
 let rows;
 
+const Countable = Object.freeze({'bombs': 1, 'marks': 2});
+
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
@@ -31,13 +33,13 @@ function setup() {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             if (!grid[i][j].bomb) {
-                grid[i][j].countBombs();
+                grid[i][j].neighborBombCount = grid[i][j].count(Countable.bombs);
             }
         }
     }
 }
 
-// On every frame, show the Cells
+// On every frame, render the Cells
 function draw() {
     background(255);
     for (let i = 0; i < cols; i++) {
@@ -53,7 +55,7 @@ document.oncontextmenu = function (event) {
 };
 
 // Mouse press LEFT reveals a Cell if it's not a bomb, RIGHT marks a Cell
-function mousePressed(e) {
+function mousePressed() {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             if (grid[i][j].contains(mouseX, mouseY)) {
@@ -63,11 +65,18 @@ function mousePressed(e) {
                         return;
                     }
 
-                    // If Cell is a bomb, the game is over, otherwise the Cell is revealed
+                    // If Cell is a bomb, the game is over
                     if (grid[i][j].bomb) {
                         gameOver();
+                        // If Cell is not revealed, reveal it
                     } else if (!grid[i][j].revealed) {
                         grid[i][j].reveal();
+                        // If Cell is revealed already, reveal its neighbors
+                    } else {
+                        // If mark count matches with bomb count but marks have been set incorrectly, the game is over
+                        if (!grid[i][j].revealNeighbors()) {
+                            gameOver();
+                        }
                     }
                 } else if (mouseButton === RIGHT) {
                     // If Cell is not revealed, it can be marked/unmarked
@@ -75,7 +84,7 @@ function mousePressed(e) {
                         grid[i][j].marked = !grid[i][j].marked;
                     }
                 }
-                return true;
+                return;
             }
         }
     }
