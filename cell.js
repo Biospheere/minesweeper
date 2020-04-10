@@ -49,35 +49,35 @@ Cell.prototype.count = function (countable) {
 
 // Called every frame, paints the "state" of the cell onto the canvas
 Cell.prototype.show = function () {
-    const showBomb = function (x, y, size) {
-        // TODO: Set different colors (dark design?)
-        fill(127);
-        // TODO: Use an image for bombs
-        ellipse(x + size * 0.5, y + size * 0.5, size * 0.5);
+    const showBox = function (x, y, size) {
+        noStroke();
+        fill(Colors.lightGrey);
+        const padding = size / 10;
+        rect(x + padding, y + padding, size - 2 * padding, size - 2 * padding);
     };
 
-    const showRevealed = function (x, y, size, neighborBombCount) {
-        fill(200);
-        rect(x, y, size, size);
-        if (neighborBombCount > 0) {
-            textAlign(CENTER);
-            fill(0);
-            // TODO: Use a monospace font and adapt the text size to cellSize
-            text(neighborBombCount, x + size * 0.5, y + size - 6);
-        }
+    const showX = function (x, y, size) {
+        stroke(Colors.red);
+        noFill();
+        line(x + size / 3, y + size / 3, x + size * 2 / 3, y + size * 2 / 3);
+        line(x + size * 2 / 3, y + size / 3, x + size / 3, y + size * 2 / 3);
     };
 
-    stroke(0);
-    noFill();
-    rect(this.x, this.y, this.size, this.size);
-    if (this.revealed) {
-        if (this.bomb) {
-            showBomb(this.x, this.y, this.size);
-        } else {
-            showRevealed(this.x, this.y, this.size, this.neighborBombCount);
-        }
-    } else if (this.marked) {
-        showBomb(this.x, this.y, this.size);
+    const showDigit = function (x, y, size, neighborBombCount) {
+        noStroke();
+        fill(Colors.turquoise);
+        textSize(size / 2);
+        textAlign(CENTER, CENTER);
+        text(neighborBombCount, x + size / 2, y + size / 2);
+    };
+
+    if ((this.revealed && this.bomb) || this.marked) {
+        showBox(this.x, this.y, this.size);
+        showX(this.x, this.y, this.size);
+    } else if (!this.revealed) {
+        showBox(this.x, this.y, this.size);
+    } else if (this.neighborBombCount > 0) {
+        showDigit(this.x, this.y, this.size, this.neighborBombCount);
     }
 };
 

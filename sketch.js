@@ -4,11 +4,13 @@ let rows;
 
 const Countable = Object.freeze({'bombs': 1, 'marks': 2});
 
+const Colors = Object.freeze({'darkGrey': '#181f1e', 'lightGrey': '#263534', 'turquoise': '#00cc66', 'red': '#fe346e'});
+
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
     // Calculate the amount of cols and rows (fill half the width and height)
-    const cellSize = 25;
+    const cellSize = 30;
     cols = floor(width / 2 / cellSize);
     rows = floor(height / 2 / cellSize);
 
@@ -41,7 +43,8 @@ function setup() {
 
 // On every frame, render the Cells
 function draw() {
-    background(255);
+    // Background color
+    background(Colors.darkGrey);
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             grid[i][j].show();
