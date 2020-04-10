@@ -69,9 +69,11 @@ Cell.prototype.show = function () {
         noStroke();
         fill(Colors.turquoise);
         const sizeHalf = floor(size / 2.0);
+        const padding = floor(size / 10.0);
+        textFont(regularFont);
         textSize(sizeHalf);
         textAlign(CENTER, CENTER);
-        text(neighborBombCount, x + sizeHalf, y + sizeHalf);
+        text(neighborBombCount, x + sizeHalf, y + sizeHalf - padding);
     };
 
     if ((this.revealed && this.bomb) || this.marked) {

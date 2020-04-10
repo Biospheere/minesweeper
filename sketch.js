@@ -13,8 +13,15 @@ const Colors = Object.freeze({'darkGrey': '#181f1e', 'lightGrey': '#263534', 'tu
 let running = false;
 let startTime, endTime;
 
+let regularFont, boldFont;
+function preload() {
+    regularFont = loadFont('assets/IBMPlexMono-Regular.ttf');
+    boldFont = loadFont('assets/IBMPlexMono-Bold.ttf');
+}
+
 function setup() {
-    createCanvas(windowWidth, windowHeight);
+    let canvas = createCanvas(windowWidth, windowHeight);
+    canvas.style('display', 'block');
 
     // Calculate the amount of cols and rows (fill half the width and height)
     cols = floor(width / 2.0 / cellSize);
@@ -64,12 +71,22 @@ function draw() {
     // Background color
     background(Colors.darkGrey);
 
-    // Cells
-    for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
-            grid[i][j].show();
-        }
-    }
+    // 404 background
+    const text404 = '404';
+    const centerX = width / 2, centerY = yOffset - height / 6;
+    const fontSize = floor(cellSize * 1.5);
+    const bounds = boldFont.textBounds(text404, centerX, centerY, fontSize);
+    noStroke();
+    fill(Colors.turquoise);
+    const padding = floor(cellSize / 10.0);
+    rect(bounds.x - padding, bounds.y - padding, bounds.w + 2 * padding, bounds.h + 2 * padding);
+
+    // 404 text
+    fill(Colors.darkGrey);
+    textFont(boldFont);
+    textSize(fontSize);
+    textAlign(CENTER, CENTER);
+    text(text404, centerX, centerY - bounds.h / 2);
 
     const showInfoBox = function (x, y, size, letter) {
         // Box
@@ -81,9 +98,10 @@ function draw() {
         // Digit
         fill(Colors.turquoise);
         const sizeHalf = floor(size / 2.0);
+        textFont(regularFont);
         textSize(sizeHalf);
         textAlign(CENTER, CENTER);
-        text(letter, x + sizeHalf, y + sizeHalf);
+        text(letter, x + sizeHalf, y + sizeHalf - padding);
     };
 
     // show amount of bombs left
@@ -115,6 +133,13 @@ function draw() {
         const x = width - xOffset - (timePassedString.length - i) * cellSize;
         const y = yOffset - 2 * cellSize;
         showInfoBox(x, y, cellSize, timePassedLetter)
+    }
+
+    // Cells
+    for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+            grid[i][j].show();
+        }
     }
 }
 
