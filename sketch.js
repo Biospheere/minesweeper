@@ -11,8 +11,8 @@ function setup() {
 
     // Calculate the amount of cols and rows (fill half the width and height)
     const cellSize = 30;
-    cols = floor(width / 2 / cellSize);
-    rows = floor(height / 2 / cellSize);
+    cols = floor(width / 2.0 / cellSize);
+    rows = floor(height / 2.0 / cellSize);
 
     // Calculate the margin to left and top
     const xOffset = floor((width - (cellSize * cols)) / 2.0);

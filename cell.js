@@ -52,23 +52,26 @@ Cell.prototype.show = function () {
     const showBox = function (x, y, size) {
         noStroke();
         fill(Colors.lightGrey);
-        const padding = size / 10;
+        const padding = floor(size / 10.0);
         rect(x + padding, y + padding, size - 2 * padding, size - 2 * padding);
     };
 
     const showX = function (x, y, size) {
         stroke(Colors.red);
         noFill();
-        line(x + size / 3, y + size / 3, x + size * 2 / 3, y + size * 2 / 3);
-        line(x + size * 2 / 3, y + size / 3, x + size / 3, y + size * 2 / 3);
+        const sizeThird = floor(size / 3.0);
+        const sizeTwoThirds = floor(size * 2 / 3.0);
+        line(x + sizeThird, y + sizeThird, x + sizeTwoThirds, y + sizeTwoThirds);
+        line(x + sizeTwoThirds, y + sizeThird, x + sizeThird, y + sizeTwoThirds);
     };
 
     const showDigit = function (x, y, size, neighborBombCount) {
         noStroke();
         fill(Colors.turquoise);
-        textSize(size / 2);
+        const sizeHalf = floor(size / 2.0);
+        textSize(sizeHalf);
         textAlign(CENTER, CENTER);
-        text(neighborBombCount, x + size / 2, y + size / 2);
+        text(neighborBombCount, x + sizeHalf, y + sizeHalf);
     };
 
     if ((this.revealed && this.bomb) || this.marked) {
