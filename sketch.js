@@ -47,18 +47,35 @@ function draw() {
     }
 }
 
-// Mouse press reveals a Cell if it's not a bomb
-function mousePressed() {
+// Prevent context menu from appearing
+document.oncontextmenu = function (event) {
+    event.preventDefault();
+};
+
+// Mouse press LEFT reveals a Cell if it's not a bomb, RIGHT marks a Cell
+function mousePressed(e) {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             if (grid[i][j].contains(mouseX, mouseY)) {
-                // If Cell is a bomb, the game is over, otherwise the Cell is revealed
-                if (grid[i][j].bomb) {
-                    gameOver();
-                } else if (!grid[i][j].revealed) {
-                    grid[i][j].reveal();
+                if (mouseButton === LEFT) {
+                    // When left-clicking a marked Cell, nothing happens
+                    if (grid[i][j].marked) {
+                        return;
+                    }
+
+                    // If Cell is a bomb, the game is over, otherwise the Cell is revealed
+                    if (grid[i][j].bomb) {
+                        gameOver();
+                    } else if (!grid[i][j].revealed) {
+                        grid[i][j].reveal();
+                    }
+                } else if (mouseButton === RIGHT) {
+                    // If Cell is not revealed, it can be marked/unmarked
+                    if (!grid[i][j].revealed) {
+                        grid[i][j].marked = !grid[i][j].marked;
+                    }
                 }
-                return;
+                return true;
             }
         }
     }
