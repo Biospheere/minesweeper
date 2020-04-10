@@ -14,6 +14,7 @@ let running = false;
 let startTime, endTime;
 
 let regularFont, boldFont;
+
 function preload() {
     regularFont = loadFont('assets/IBMPlexMono-Regular.ttf');
     boldFont = loadFont('assets/IBMPlexMono-Bold.ttf');
@@ -73,13 +74,13 @@ function draw() {
 
     // 404 background
     const text404 = '404';
-    const centerX = width / 2, centerY = yOffset - height / 6;
-    const fontSize = floor(cellSize * 1.5);
+    let centerX = width / 2, centerY = yOffset - height / 6;
+    let fontSize = floor(cellSize * 1.5);
     const bounds = boldFont.textBounds(text404, centerX, centerY, fontSize);
     noStroke();
     fill(Colors.turquoise);
     const padding = floor(cellSize / 10.0);
-    rect(bounds.x - padding, bounds.y - padding, bounds.w + 2 * padding, bounds.h + 2 * padding);
+    rect(bounds.x - padding, bounds.y - 2 * padding, bounds.w + 2 * padding, bounds.h + 2 * padding);
 
     // 404 text
     fill(Colors.darkGrey);
@@ -87,6 +88,17 @@ function draw() {
     textSize(fontSize);
     textAlign(CENTER, CENTER);
     text(text404, centerX, centerY - bounds.h / 2);
+
+    // Error messages
+    fontSize = floor(cellSize / 2.0);
+    centerY1 = yOffset - height / 8;
+    centerY2 = centerY1 + floor(1.5 * fontSize);
+    fill(Colors.turquoise);
+    textFont(regularFont);
+    textSize(fontSize);
+    textAlign(CENTER, CENTER);
+    text(errorMessage1, centerX, centerY1);
+    text(errorMessage2, centerX, centerY2);
 
     const showInfoBox = function (x, y, size, letter) {
         // Box
@@ -141,6 +153,16 @@ function draw() {
             grid[i][j].show();
         }
     }
+
+    // Minesweeper text
+    noStroke();
+    fill(Colors.turquoise);
+    fontSize = floor(cellSize / 1.5);
+    centerY = yOffset + (rows + 1) * cellSize;
+    textFont(regularFont);
+    textSize(fontSize);
+    textAlign(CENTER, CENTER);
+    text('MINESWEEPER', centerX, centerY);
 }
 
 // Prevent context menu from appearing
