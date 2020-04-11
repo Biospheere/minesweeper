@@ -54,6 +54,13 @@ function setup() {
     }
 }
 
+function windowResized() {
+    setup();
+    running = false;
+    startTime = undefined;
+    endTime = undefined;
+}
+
 function getBombsLeftAmount() {
     let amount = 0;
     for (let i = 0; i < cols; i++) {
@@ -142,7 +149,7 @@ function draw() {
     const lastTime = running ? +new Date() : endTime;
     const timePassedString = startTime ? millisToString(lastTime - startTime) : '00:00';
     // Only if there is enough space
-    if (cols > bombsLeftString.length + timePassedString.length) {
+    if (height > 750 && cols > bombsLeftString.length + timePassedString.length) {
         for (let i = 0; i < timePassedString.length; i++) {
             const timePassedLetter = timePassedString[i];
             const x = width - xOffset - (timePassedString.length - i) * cellSize;

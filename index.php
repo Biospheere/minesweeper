@@ -23,6 +23,7 @@ $t = new Translation();
     <script type="application/javascript" src="sketch.js"></script>
     <script type="application/javascript" src="cell.js"></script>
     <link rel="stylesheet" href="stylesheet.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title><?php $t->Out("TITLE"); ?></title>
 </head>
 <body>
