@@ -91,10 +91,10 @@ Cell.prototype.contains = function (x, y) {
     return x > this.x && x < this.x + this.size && y > this.y && y < this.y + this.size;
 };
 
-// Reveals the Cell and, if it doesn't have any neighbors, calls the flood-fill function
+// Reveals the Cell and, if it doesn't have any neighbor bombs/marks, calls the flood-fill function
 Cell.prototype.reveal = function () {
     this.revealed = true;
-    if (this.neighborBombCount === 0) {
+    if (this.neighborBombCount === 0 && this.count(Countable.marks) === 0) {
         this.floodFill();
     }
 };

@@ -13,6 +13,10 @@ const Colors = Object.freeze({'darkGrey': '#181f1e', 'lightGrey': '#263534', 'tu
 let running = false;
 let startTime, endTime;
 
+let clickStarted;
+let clickedI, clickedJ;
+const longPressDuration = 500; // In milliseconds
+
 let regularFont, boldFont;
 
 function preload() {
@@ -75,6 +79,16 @@ function getBombsLeftAmount() {
 
 // Renders every frame
 function draw() {
+    // Check if mouse was long-pressed
+    if (clickStarted && +new Date() - clickStarted > longPressDuration) {
+        // Reset long-press "measuring"
+        clickStarted = undefined;
+        // If Cell is not revealed, it can be marked/unmarked
+        if (!grid[clickedI][clickedJ].revealed) {
+            grid[clickedI][clickedJ].marked = !grid[clickedI][clickedJ].marked;
+        }
+    }
+
     // Background color
     background(Colors.darkGrey);
 
@@ -188,8 +202,29 @@ document.oncontextmenu = function (event) {
     }
 };
 
-// Mouse press LEFT reveals a Cell if it's not a bomb, RIGHT marks a Cell
+// Register every mouse press, so long-presses can be recognized
+function mousePressed() {
+    for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+            if (grid[i][j].contains(mouseX, mouseY)) {
+                clickStarted = +new Date();
+                clickedI = i;
+                clickedJ = j;
+                return;
+            }
+        }
+    }
+}
+
+// Mouse press LEFT reveals a Cell (or its neighbors) if it's not a bomb, RIGHT marks a Cell
 function mouseReleased() {
+    // If the mouse press time was reset by draw() due to a long-press, ignore the release for further actions
+    if (!clickStarted) {
+        return;
+    }
+    clickStarted = undefined;
+
+    // Actual click
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             if (grid[i][j].contains(mouseX, mouseY)) {
