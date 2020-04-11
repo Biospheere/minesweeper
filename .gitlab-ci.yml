@@ -14,4 +14,4 @@ deploy:
     - chmod 700 ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
-    - 'rsync -aqvz --no-perms --no-owner --no-group --delete ./ webuser@185.183.158.192:/var/www/404.wetter.codes/test/'
+    - 'rsync -aqvz --no-perms --no-owner --no-group --delete ./ webuser@185.183.158.192:/var/www/404.wetter.codes/'
