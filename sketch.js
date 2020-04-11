@@ -202,16 +202,48 @@ document.oncontextmenu = function (event) {
     }
 };
 
-// Catch the touch event (mousePressed() may not work on mobile devices)
+// If touch is supported, mouse clicks are sometimes also triggered
+// This ugly workaround prevents mouse clicks after touch clicks were recognized
+let touchPressed = false, touchReleased = false;
+
 function touchStarted() {
-    mousePressed();
+    touchPressed = true;
+    performPress();
+}
+
+function touchEnd() {
+    touchReleased = true;
+    performRelease();
+}
+
+function mousePressed() {
+    // Skips the mouse press after touch start
+    if (touchPressed) {
+        touchPressed = false;
+    } else {
+        performPress();
+    }
+}
+
+function mouseReleased() {
+    // Skips the mouse release after touch end
+    if (touchReleased) {
+        touchReleased = false;
+    } else {
+        performRelease();
+    }
 }
 
 // Register every mouse press, so long-presses can be recognized
-function mousePressed() {
+function performPress() {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             if (grid[i][j].contains(mouseX, mouseY)) {
+                if (!running) {
+                    running = true;
+                    startTime = +new Date();
+                }
+
                 clickStarted = +new Date();
                 clickedI = i;
                 clickedJ = j;
@@ -222,9 +254,10 @@ function mousePressed() {
 }
 
 // Mouse press LEFT reveals a Cell (or its neighbors) if it's not a bomb, RIGHT marks a Cell
-function mouseReleased() {
-    // If the mouse press time was reset by draw() due to a long-press, ignore the release for further actions
-    if (!clickStarted) {
+function performRelease() {
+    // If the game is not running anymore or
+    // .. if the mouse press time was reset by draw() due to a long-press, ignore the release for further actions
+    if (!running || !clickStarted) {
         return;
     }
     clickStarted = undefined;
@@ -233,11 +266,6 @@ function mouseReleased() {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             if (grid[i][j].contains(mouseX, mouseY)) {
-                if (!running) {
-                    running = true;
-                    startTime = +new Date();
-                }
-
                 if (mouseButton === LEFT) {
                     // When left-clicking a marked Cell, nothing happens
                     if (grid[i][j].marked) {
