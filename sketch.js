@@ -176,13 +176,20 @@ function draw() {
     text('MINESWEEPER', centerX, centerY);
 }
 
-// Prevent context menu from appearing
+// Prevent context menu from appearing within the grid
 document.oncontextmenu = function (event) {
-    event.preventDefault();
+    for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+            if (grid[i][j].contains(mouseX, mouseY)) {
+                event.preventDefault();
+                return;
+            }
+        }
+    }
 };
 
 // Mouse press LEFT reveals a Cell if it's not a bomb, RIGHT marks a Cell
-function mousePressed() {
+function mouseReleased() {
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             if (grid[i][j].contains(mouseX, mouseY)) {
