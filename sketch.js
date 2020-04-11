@@ -202,6 +202,11 @@ document.oncontextmenu = function (event) {
     }
 };
 
+// Catch the touch event (mousePressed() may not work on mobile devices)
+function touchStarted() {
+    mousePressed();
+}
+
 // Register every mouse press, so long-presses can be recognized
 function mousePressed() {
     for (let i = 0; i < cols; i++) {
