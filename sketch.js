@@ -5,6 +5,7 @@ let cols, rows;
 let xOffset, yOffset;
 
 let grid;
+let bombsAmount = 0;
 
 const Countable = Object.freeze({'bombs': 1, 'marks': 2});
 
@@ -12,6 +13,7 @@ const Colors = Object.freeze({'darkGrey': '#181f1e', 'lightGrey': '#263534', 'tu
 
 let running = false;
 let startTime, endTime;
+let isGameOver = false;
 
 let clickStarted;
 let clickedI, clickedJ;
@@ -44,6 +46,9 @@ function setup() {
             const y = yOffset + j * cellSize;
             // Probability of a bomb: 20%
             const bomb = Math.random() < 0.2;
+            if (bomb) {
+                bombsAmount++;
+            }
             grid[i][j] = new Cell(i, j, x, y, cellSize, bomb);
         }
     }
@@ -65,7 +70,7 @@ function windowResized() {
     endTime = undefined;
 }
 
-function getBombsLeftAmount() {
+function getUnmarkedBombsAmount() {
     let amount = 0;
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
@@ -77,8 +82,26 @@ function getBombsLeftAmount() {
     return amount;
 }
 
+function getRevealedAmount() {
+    let amount = 0;
+    for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+            if (grid[i][j].revealed) {
+                amount++;
+            }
+        }
+    }
+    return amount;
+}
+
 // Renders every frame
 function draw() {
+    // Stop the render loop if game is over
+    if (isGameOver) {
+        noLoop();
+        return;
+    }
+
     // Check if mouse was long-pressed
     if (clickStarted && +new Date() - clickStarted > longPressDuration) {
         // Reset long-press "measuring"
@@ -137,10 +160,11 @@ function draw() {
     };
 
     // show amount of bombs left (only if there is enough space)
-    const bombsLeftString = getBombsLeftAmount().toString();
+    const unmarkedBombsAmount = getUnmarkedBombsAmount();
+    const unmarkedBombsString = unmarkedBombsAmount.toString();
     if (height > 750) {
-        for (let i = 0; i < bombsLeftString.length; i++) {
-            const bombsLeftLetter = bombsLeftString[i];
+        for (let i = 0; i < unmarkedBombsString.length; i++) {
+            const bombsLeftLetter = unmarkedBombsString[i];
             const x = xOffset + i * cellSize;
             const y = yOffset - 2 * cellSize;
             showInfoBox(x, y, cellSize, bombsLeftLetter)
@@ -163,7 +187,7 @@ function draw() {
     const lastTime = running ? +new Date() : endTime;
     const timePassedString = startTime ? millisToString(lastTime - startTime) : '00:00';
     // Only if there is enough space
-    if (height > 750 && cols > bombsLeftString.length + timePassedString.length) {
+    if (height > 750 && cols > unmarkedBombsString.length + timePassedString.length) {
         for (let i = 0; i < timePassedString.length; i++) {
             const timePassedLetter = timePassedString[i];
             const x = width - xOffset - (timePassedString.length - i) * cellSize;
@@ -188,6 +212,11 @@ function draw() {
     textSize(fontSize);
     textAlign(CENTER, CENTER);
     text('MINESWEEPER', centerX, centerY);
+
+    // If no bombs are left, the game is (positively) over
+    if (getRevealedAmount() === cols * rows - bombsAmount) {
+        gameOver();
+    }
 }
 
 // Prevent context menu from appearing within the grid
@@ -297,7 +326,7 @@ function performRelease() {
     }
 }
 
-// Game Over reveals all Cells manually
+// Game Over reveals all Cells manually, stores the end time and stops the canvas from refreshing
 function gameOver() {
     running = false;
     endTime = +new Date();
@@ -306,4 +335,6 @@ function gameOver() {
             grid[i][j].revealed = true;
         }
     }
+    redraw();
+    isGameOver = true;
 }

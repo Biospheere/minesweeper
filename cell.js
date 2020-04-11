@@ -24,7 +24,7 @@ Cell.prototype.getNeighbors = function () {
         for (let yoff = -1; yoff <= 1; yoff++) {
             const j = this.j + yoff;
             // Skip if outside the grid or the Cell itself
-            if (j < 0 || j >= rows || (i === 0 && j === 0)) {
+            if (j < 0 || j >= rows || (i === this.i && j === this.j)) {
                 continue;
             }
 
