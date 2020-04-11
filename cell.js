@@ -65,6 +65,18 @@ Cell.prototype.show = function () {
         line(x + sizeTwoThirds, y + sizeThird, x + sizeThird, y + sizeTwoThirds);
     };
 
+    const showY = function (x, y, size) {
+        stroke(Colors.turquoise);
+        strokeWeight(2);
+        noFill();
+        const threeNinths = floor(size * 3 / 9.0);
+        const fourNinths = floor(size * 4 / 9.0);
+        const fiveNinths = floor(size * 5 / 9.0);
+        const sixNinths = floor(size * 6 / 9.0);
+        line(x + threeNinths, y + fiveNinths, x + fourNinths, y + sixNinths);
+        line(x + fourNinths, y + sixNinths, x + sixNinths, y + threeNinths);
+    };
+
     const showDigit = function (x, y, size, neighborBombCount) {
         noStroke();
         fill(Colors.turquoise);
@@ -76,7 +88,9 @@ Cell.prototype.show = function () {
         text(neighborBombCount, x + sizeHalf, y + sizeHalf - padding);
     };
 
-    if ((this.revealed && this.bomb) || this.marked) {
+    if (won && this.bomb) {
+        showY(this.x, this.y, this.size);
+    } else if ((this.revealed && this.bomb) || this.marked) {
         showBox(this.x, this.y, this.size);
         showX(this.x, this.y, this.size);
     } else if (!this.revealed) {

@@ -14,6 +14,7 @@ const Colors = Object.freeze({'darkGrey': '#181f1e', 'lightGrey': '#263534', 'tu
 let running = false;
 let startTime, endTime;
 let isGameOver = false;
+let won = false;
 
 let clickStarted;
 let clickedI, clickedJ;
@@ -96,12 +97,6 @@ function getRevealedAmount() {
 
 // Renders every frame
 function draw() {
-    // Stop the render loop if game is over
-    if (isGameOver) {
-        noLoop();
-        return;
-    }
-
     // Check if mouse was long-pressed
     if (clickStarted && +new Date() - clickStarted > longPressDuration) {
         // Reset long-press "measuring"
@@ -160,7 +155,7 @@ function draw() {
     };
 
     // show amount of bombs left (only if there is enough space)
-    const unmarkedBombsAmount = getUnmarkedBombsAmount();
+    const unmarkedBombsAmount = won ? 0 : getUnmarkedBombsAmount();
     const unmarkedBombsString = unmarkedBombsAmount.toString();
     if (height > 750) {
         for (let i = 0; i < unmarkedBombsString.length; i++) {
@@ -213,8 +208,15 @@ function draw() {
     textAlign(CENTER, CENTER);
     text('MINESWEEPER', centerX, centerY);
 
+    // Stop the render loop if game is over
+    if (isGameOver) {
+        noLoop();
+        return;
+    }
+
     // If no bombs are left, the game is (positively) over
     if (getRevealedAmount() === cols * rows - bombsAmount) {
+        won = true;
         gameOver();
     }
 }
