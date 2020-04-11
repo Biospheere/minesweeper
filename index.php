@@ -22,8 +22,9 @@ $t = new Translation();
     <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script>
     <script type="application/javascript" src="sketch.js"></script>
     <script type="application/javascript" src="cell.js"></script>
+    <link rel="stylesheet" href="stylesheet.css">
     <title><?php $t->Out("TITLE"); ?></title>
 </head>
-<body style="margin: 0; padding: 0; overflow: hidden;">
+<body>
 </body>
 </html>
