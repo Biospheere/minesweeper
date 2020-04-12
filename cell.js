@@ -90,7 +90,7 @@ Cell.prototype.show = function () {
 
     if (won && this.bomb) {
         showY(this.x, this.y, this.size);
-    } else if ((this.revealed && this.bomb) || this.marked) {
+    } else if ((this.revealed && this.bomb) || (!this.revealed && this.marked)) {
         showBox(this.x, this.y, this.size);
         showX(this.x, this.y, this.size);
     } else if (!this.revealed) {
